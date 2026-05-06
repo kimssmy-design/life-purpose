@@ -172,6 +172,43 @@ body {
   .result-col { border-right: none; border-bottom: 1px solid var(--gray-200); }
   .result-col:last-child { border-bottom: none; }
 }
+
+  /* ── QR 팝업 ── */
+  .qr-fab {
+    position: fixed; bottom: 24px; right: 24px; z-index: 900;
+    width: 52px; height: 52px; border-radius: 50%;
+    background: linear-gradient(135deg, #7C3AED, #EC4899);
+    color: #fff; border: none; font-size: 22px;
+    cursor: pointer; box-shadow: 0 4px 16px rgba(124,58,237,.45);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform .15s;
+  }
+  .qr-fab:hover { transform: scale(1.1); }
+  .qr-overlay {
+    display: none; position: fixed; inset: 0; z-index: 1000;
+    background: rgba(0,0,0,.55); align-items: center; justify-content: center;
+  }
+  .qr-overlay.on { display: flex; }
+  .qr-modal {
+    background: #fff; border-radius: 24px;
+    padding: 32px 28px; text-align: center;
+    box-shadow: 0 12px 48px rgba(0,0,0,.25);
+    max-width: 320px; width: 90%;
+  }
+  .qr-modal h3 { font-size: 17px; font-weight: 700; color: #1F2937; margin-bottom: 6px; }
+  .qr-modal p { font-size: 12px; color: #9CA3AF; margin-bottom: 20px; }
+  #qr-canvas { margin: 0 auto 16px; display: block; }
+  .qr-url {
+    font-size: 13px; color: #7C3AED; font-weight: 600;
+    word-break: break-all; margin-bottom: 20px;
+  }
+  .qr-close {
+    display: block; width: 100%; padding: 12px;
+    background: linear-gradient(135deg,#7C3AED,#EC4899);
+    color: #fff; border: none; border-radius: 12px;
+    font-family: "Noto Sans KR",sans-serif;
+    font-size: 15px; font-weight: 700; cursor: pointer;
+  }
 </style>
 </head>
 <body>
@@ -528,5 +565,27 @@ function resetAll() {
   goStep(1);
 }
 </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const QR_URL = 'https://rul.kr/purpose';
+let qrGenerated = false;
+function openQR() {
+  document.getElementById('qr-overlay').classList.add('on');
+  if (!qrGenerated) {
+    new QRCode(document.getElementById('qr-canvas'), {
+      text: QR_URL, width: 220, height: 220,
+      colorDark: '#1F2937', colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.H
+    });
+    qrGenerated = true;
+  }
+}
+function closeQR(e) {
+  if (!e || e.target === document.getElementById('qr-overlay')) {
+    document.getElementById('qr-overlay').classList.remove('on');
+  }
+}
+
 </body>
 </html>
